@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/layout/CartDrawer';
 import SmoothScroll from '@/components/layout/SmoothScroll';
+import WhatsAppButton from '@/components/ui/WhatsAppButton';
 
 const spaceGrotesk = Space_Grotesk({ variable: '--font-space-grotesk', subsets: ['latin'], display: 'swap' });
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Footer />
           <CartDrawer />
+          <WhatsAppButton />
         </SmoothScroll>
       </body>
     </html>

@@ -5,6 +5,7 @@ import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
 import type { Product } from '@/lib/data';
 import { products } from '@/lib/data';
+import RadarChart from '@/components/ui/RadarChart';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -137,8 +138,46 @@ export default function ProductDetail({ product }: { product: Product }) {
               </div>
             </motion.div>
 
+            {/* Sensory radar */}
+            <motion.div variants={fadeUp} className="mb-10">
+              <h3 className="text-xs font-mono uppercase tracking-widest text-cyan-500 mb-4">
+                {lang === 'fr' ? 'Profil sensoriel' : 'Sensory profile'}
+              </h3>
+              <div className="flex gap-6 items-center">
+                <div className="w-44 h-44 flex-shrink-0">
+                  <RadarChart profile={product.sensoryProfile} color="#00e5ff" />
+                </div>
+                <div className="space-y-2 flex-1">
+                  {[
+                    { key: 'vanillin' as const, label: { fr: 'Vanilline', en: 'Vanillin' } },
+                    { key: 'floral' as const, label: { fr: 'Floral', en: 'Floral' } },
+                    { key: 'sweetness' as const, label: { fr: 'Douceur', en: 'Sweetness' } },
+                    { key: 'richness' as const, label: { fr: 'Richesse', en: 'Richness' } },
+                    { key: 'suppleness' as const, label: { fr: 'Souplesse', en: 'Suppleness' } },
+                    { key: 'purity' as const, label: { fr: 'Pureté', en: 'Purity' } },
+                  ].map((axis) => (
+                    <div key={axis.key} className="space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-mono text-[var(--text-tertiary)] uppercase tracking-widest">{axis.label[lang]}</span>
+                        <span className="text-[10px] font-mono text-cyan-400">{product.sensoryProfile[axis.key]}</span>
+                      </div>
+                      <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${product.sensoryProfile[axis.key]}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
             {/* Certifications */}
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-2 mb-10">
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-2 mb-5">
               <span className="text-[var(--text-tertiary)] text-xs font-mono mr-2">
                 {lang === 'fr' ? 'Certifié :' : 'Certified:'}
               </span>
@@ -148,6 +187,33 @@ export default function ProductDetail({ product }: { product: Product }) {
                 </span>
               ))}
             </motion.div>
+
+            {/* Traceability */}
+            {product.lot && (
+              <motion.div variants={fadeUp} className="mb-10">
+                <Link
+                  href={`/trace/${encodeURIComponent(product.lot)}`}
+                  className="inline-flex items-center gap-3 bg-[rgba(163,255,18,0.05)] border border-[#a3ff12]/20 hover:border-[#a3ff12]/40 rounded-xl px-4 py-3 transition-colors duration-300 group"
+                >
+                  <div className="relative">
+                    <motion.div
+                      className="w-2 h-2 rounded-full bg-[#a3ff12]"
+                      animate={{ scale: [1, 1.8, 1], opacity: [1, 0.3, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs font-mono text-[#a3ff12] uppercase tracking-widest">
+                      {lang === 'fr' ? 'Traçabilité lot' : 'Lot traceability'}
+                    </p>
+                    <p className="text-[var(--text-tertiary)] text-xs font-mono">{product.lot} · {product.harvest}</p>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a3ff12" strokeWidth="2" className="ml-auto opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              </motion.div>
+            )}
 
             {/* Actions */}
             <motion.div variants={fadeUp} className="flex flex-wrap gap-3">

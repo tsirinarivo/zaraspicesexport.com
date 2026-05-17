@@ -36,11 +36,28 @@ const categories = {
   ],
 };
 
+const B2B_TIERS = {
+  fr: [
+    { range: '< 5 kg', label: 'Retail', desc: 'Prix public', discount: 0, color: '#00e5ff' },
+    { range: '5 – 50 kg', label: 'Professionnel', desc: '–15% sur le prix public', discount: 0.15, color: '#a3ff12' },
+    { range: '> 50 kg', label: 'Wholesale', desc: 'Prix négocié — nous contacter', discount: null, color: '#ff6b35' },
+  ],
+  en: [
+    { range: '< 5 kg', label: 'Retail', desc: 'Public price', discount: 0, color: '#00e5ff' },
+    { range: '5 – 50 kg', label: 'Professional', desc: '–15% off public price', discount: 0.15, color: '#a3ff12' },
+    { range: '> 50 kg', label: 'Wholesale', desc: 'Negotiated price — contact us', discount: null, color: '#ff6b35' },
+  ],
+};
+
 export default function ShopPage() {
   const { lang } = useLanguage();
   const { addItem } = useCart();
   const { format } = useCurrency();
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeTier, setActiveTier] = useState<number>(0);
+
+  const tiers = B2B_TIERS[lang];
+  const tierDiscount = tiers[activeTier].discount;
 
   const filtered =
     activeCategory === 'all' ? products : products.filter((p) => p.category === activeCategory);
@@ -101,6 +118,49 @@ export default function ShopPage() {
         </div>
       </section>
 
+      {/* B2B Tiers */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <p className="text-xs font-mono uppercase tracking-widest text-[var(--text-tertiary)] mb-3">
+          {lang === 'fr' ? 'Tarification selon volume' : 'Volume pricing'}
+        </p>
+        <div className="grid grid-cols-3 gap-3">
+          {tiers.map((tier, i) => (
+            <button
+              key={i}
+              onClick={() => {
+                if (tier.discount !== null) setActiveTier(i);
+              }}
+              className={`text-left p-4 rounded-xl border transition-all duration-300 ${
+                activeTier === i
+                  ? 'border-opacity-40'
+                  : 'border-white/8 hover:border-white/15'
+              }`}
+              style={activeTier === i ? { borderColor: `${tier.color}40`, background: `${tier.color}06` } : {}}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-2 h-2 rounded-full" style={{ background: tier.color }} />
+                <span className="text-xs font-mono font-semibold" style={{ color: tier.color }}>{tier.label}</span>
+              </div>
+              <p className="text-[var(--text-primary)] text-xs font-mono font-bold">{tier.range}</p>
+              <p className="text-[var(--text-tertiary)] text-[10px] font-mono mt-0.5">{tier.desc}</p>
+            </button>
+          ))}
+        </div>
+        {activeTier === 2 && (
+          <div className="mt-3 bg-[rgba(255,107,53,0.06)] border border-[#ff6b35]/20 rounded-xl p-3 flex items-center justify-between">
+            <p className="text-sm text-[var(--text-secondary)]">
+              {lang === 'fr' ? 'Pour > 50 kg, contactez-nous pour un devis personnalisé.' : 'For > 50 kg, contact us for a custom quote.'}
+            </p>
+            <a
+              href="mailto:zaraspicesexport@gmail.com?subject=Devis wholesale"
+              className="flex-shrink-0 bg-[#ff6b35] hover:bg-[#ff8555] text-white font-semibold px-4 py-2 rounded-xl text-xs transition-colors duration-300"
+            >
+              {lang === 'fr' ? 'Demander →' : 'Request →'}
+            </a>
+          </div>
+        )}
+      </div>
+
       {/* Filter tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
         <div className="flex flex-wrap gap-2">
@@ -146,6 +206,7 @@ export default function ShopPage() {
                   product={product}
                   lang={lang}
                   format={format}
+                  discount={tierDiscount ?? 0}
                   onAddToCart={(weightKg) => addItem(product, weightKg)}
                 />
               </motion.div>
@@ -170,14 +231,17 @@ function ShopProductCard({
   product,
   lang,
   format,
+  discount,
   onAddToCart,
 }: {
   product: Product;
   lang: 'fr' | 'en';
   format: (amountEur: number) => string;
+  discount: number;
   onAddToCart: (weightKg: number) => void;
 }) {
   const [weightKg, setWeightKg] = useState(1);
+  const discountedPrice = product.priceEur * (1 - discount);
 
   const adjustWeight = (delta: number) => {
     setWeightKg((prev) => Math.max(0.5, Math.round((prev + delta) * 10) / 10));
@@ -198,6 +262,13 @@ function ShopProductCard({
             {product.category}
           </span>
         </div>
+        {discount > 0 && (
+          <div className="absolute top-4 right-4">
+            <span className="text-xs font-mono font-bold bg-[#a3ff12] text-[#0a1628] px-2 py-1 rounded-lg">
+              -{Math.round(discount * 100)}%
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Info */}
@@ -212,9 +283,14 @@ function ShopProductCard({
         {/* Price */}
         <div className="flex items-baseline gap-2">
           <span className="text-cyan-400 font-display font-bold text-2xl">
-            {format(product.priceEur)}
+            {format(discountedPrice)}
           </span>
           <span className="text-[var(--text-tertiary)] text-xs font-mono">/kg</span>
+          {discount > 0 && (
+            <span className="text-[var(--text-tertiary)] text-xs font-mono line-through">
+              {format(product.priceEur)}
+            </span>
+          )}
         </div>
 
         {/* Weight control */}
@@ -245,7 +321,7 @@ function ShopProductCard({
         <div className="text-sm text-[var(--text-secondary)]">
           {lang === 'fr' ? 'Sous-total' : 'Subtotal'}:{' '}
           <span className="text-[var(--text-primary)] font-semibold">
-            {format(product.priceEur * weightKg)}
+            {format(discountedPrice * weightKg)}
           </span>
         </div>
 

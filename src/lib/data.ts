@@ -5,6 +5,15 @@ export interface ProductSpec {
   value: string;
 }
 
+export interface SensoryProfile {
+  vanillin: number;
+  floral: number;
+  sweetness: number;
+  richness: number;
+  suppleness: number;
+  purity: number;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -20,6 +29,9 @@ export interface Product {
   gradient: string;
   accentColor: string;
   emoji: string;
+  sensoryProfile: SensoryProfile;
+  lot?: string;
+  harvest?: string;
 }
 
 export interface Value {
@@ -54,6 +66,9 @@ export const products: Product[] = [
     gradient: 'from-amber-950 via-amber-900 to-stone-900',
     accentColor: '#C8A96E',
     emoji: '🌿',
+    sensoryProfile: { vanillin: 85, floral: 45, sweetness: 55, richness: 88, suppleness: 60, purity: 82 },
+    lot: 'ZSE-TK-2024-001',
+    harvest: 'Juillet 2024 · SAVA',
     specs: [
       { label: { fr: 'Longueur', en: 'Length' }, value: '16–20 cm' },
       { label: { fr: "Taux d'humidité", en: 'Moisture content' }, value: '20–30%' },
@@ -80,6 +95,9 @@ export const products: Product[] = [
     gradient: 'from-yellow-950 via-amber-900 to-amber-950',
     accentColor: '#E8C97A',
     emoji: '✨',
+    sensoryProfile: { vanillin: 92, floral: 75, sweetness: 85, richness: 95, suppleness: 90, purity: 90 },
+    lot: 'ZSE-GR-2024-007',
+    harvest: 'Août 2024 · Sambava',
     specs: [
       { label: { fr: 'Longueur', en: 'Length' }, value: '16–20 cm' },
       { label: { fr: "Taux d'humidité", en: 'Moisture content' }, value: '30–35%' },
@@ -106,6 +124,9 @@ export const products: Product[] = [
     gradient: 'from-rose-950 via-amber-950 to-stone-900',
     accentColor: '#D4A5A5',
     emoji: '🌸',
+    sensoryProfile: { vanillin: 72, floral: 92, sweetness: 88, richness: 70, suppleness: 85, purity: 78 },
+    lot: 'ZSE-PM-2024-003',
+    harvest: 'Juin 2024 · Mananara',
     specs: [
       { label: { fr: 'Longueur', en: 'Length' }, value: '18–27 cm' },
       { label: { fr: "Taux d'humidité", en: 'Moisture content' }, value: '30–35%' },
@@ -131,6 +152,9 @@ export const products: Product[] = [
     gradient: 'from-stone-950 via-zinc-900 to-stone-950',
     accentColor: '#F5F0E8',
     emoji: '⚫',
+    sensoryProfile: { vanillin: 98, floral: 65, sweetness: 68, richness: 99, suppleness: 35, purity: 97 },
+    lot: 'ZSE-CV-2024-012',
+    harvest: 'Septembre 2024 · SAVA',
     specs: [
       { label: { fr: 'Composition', en: 'Composition' }, value: 'Graines naturelles / Natural seeds' },
       { label: { fr: 'Texture', en: 'Texture' }, value: 'Fine, légèrement humide / Fine, slightly moist' },
@@ -157,6 +181,9 @@ export const products: Product[] = [
     gradient: 'from-amber-950 via-stone-900 to-amber-950',
     accentColor: '#D4B896',
     emoji: '🟤',
+    sensoryProfile: { vanillin: 85, floral: 58, sweetness: 78, richness: 84, suppleness: 28, purity: 91 },
+    lot: 'ZSE-PV-2024-005',
+    harvest: 'Octobre 2024 · Antalaha',
     specs: [
       { label: { fr: 'Composition', en: 'Composition' }, value: '100% vanille pure / 100% pure vanilla' },
       { label: { fr: 'Granulométrie', en: 'Particle size' }, value: 'Fine' },
