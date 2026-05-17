@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { motion, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
+import { contact } from '@/lib/data';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -16,6 +17,27 @@ const staggerContainer: Variants = {
 export default function CTASection() {
   const { lang } = useLanguage();
 
+  const ctaLinks = [
+    {
+      href: '/contact',
+      label: { fr: 'Demander un Devis', en: 'Request a Quote' },
+      primary: true,
+      icon: true,
+    },
+    {
+      href: '/shop',
+      label: { fr: 'Commander en ligne', en: 'Order online' },
+      primary: false,
+      icon: false,
+    },
+    {
+      href: '/compare',
+      label: { fr: 'Comparer les produits', en: 'Compare products' },
+      primary: false,
+      icon: false,
+    },
+  ];
+
   return (
     <section className="relative overflow-hidden py-32">
       {/* Background gradient */}
@@ -28,10 +50,27 @@ export default function CTASection() {
         }}
       />
 
-      {/* Border frame */}
+      {/* Animated corner decorations */}
       <div className="absolute inset-8 md:inset-16 border border-cyan-500/5 pointer-events-none rounded-3xl" />
       <div className="absolute top-8 md:top-16 left-8 md:left-16 w-12 h-12 border-t border-l border-cyan-500/15 rounded-tl-xl" />
       <div className="absolute bottom-8 md:bottom-16 right-8 md:right-16 w-12 h-12 border-b border-r border-cyan-500/15 rounded-br-xl" />
+      <div className="absolute top-8 md:top-16 right-8 md:right-16 w-8 h-8 border-t border-r border-cyan-500/8 rounded-tr-lg" />
+      <div className="absolute bottom-8 md:bottom-16 left-8 md:left-16 w-8 h-8 border-b border-l border-cyan-500/8 rounded-bl-lg" />
+
+      {/* Floating accent dots */}
+      {[
+        { top: '20%', left: '10%', color: '#a3ff12' },
+        { top: '70%', right: '8%', color: '#00e5ff' },
+        { top: '40%', right: '15%', color: '#a3ff12' },
+      ].map((dot, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 rounded-full pointer-events-none"
+          style={{ ...dot, background: dot.color }}
+          animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.5, 1] }}
+          transition={{ duration: 3 + i, repeat: Infinity, delay: i * 1.2 }}
+        />
+      ))}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <motion.div
@@ -57,43 +96,59 @@ export default function CTASection() {
             <span className="text-[var(--text-primary)]"> ?</span>
           </motion.h2>
 
-          <motion.p variants={fadeUp} className="text-[var(--text-secondary)] max-w-lg mx-auto mb-12 leading-relaxed">
+          <motion.p variants={fadeUp} className="text-[var(--text-secondary)] max-w-lg mx-auto mb-4 leading-relaxed">
             {lang === 'fr'
-              ? "Nos prix s'ajustent selon la quantité commandée. Contactez-nous pour obtenir un devis personnalisé adapté à vos besoins."
-              : 'Our prices adjust based on order quantity. Contact us for a personalized quote tailored to your needs.'}
+              ? "Commandez directement en ligne, demandez un devis personnalisé ou comparez nos produits avant de décider. Nos prix s'ajustent selon la quantité."
+              : 'Order directly online, request a personalised quote, or compare our products before deciding. Our prices adjust based on quantity.'}
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4 mb-16">
-            <Link
-              href="/contact"
-              className="group flex items-center gap-3 bg-cyan-500 hover:bg-cyan-400 text-[#0a1628] font-semibold px-8 py-4 rounded-xl transition-colors duration-300 text-sm"
-            >
-              {lang === 'fr' ? 'Demander un Devis' : 'Request a Quote'}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
+          {/* B2B note */}
+          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 mb-10 text-xs font-mono text-[var(--text-tertiary)] bg-white/[0.03] border border-white/8 rounded-lg px-4 py-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#a3ff12]" />
+            {lang === 'fr' ? 'Tarifs B2B disponibles dès 5 kg — pro, wholesale, devis sur mesure' : 'B2B rates available from 5 kg — pro, wholesale, custom quotes'}
+          </motion.div>
 
-            <Link
-              href="/products"
-              className="flex items-center gap-3 border border-cyan-500/30 hover:border-cyan-500/60 text-[var(--text-secondary)] hover:text-white px-8 py-4 rounded-xl transition-all duration-300 text-sm"
-            >
-              {lang === 'fr' ? 'Explorer les Produits' : 'Explore Products'}
-            </Link>
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4 mb-16">
+            {ctaLinks.map((cta, i) => (
+              <Link
+                key={i}
+                href={cta.href}
+                className={`group flex items-center gap-3 font-semibold px-8 py-4 rounded-xl transition-all duration-300 text-sm ${
+                  cta.primary
+                    ? 'bg-cyan-500 hover:bg-cyan-400 text-[#0a1628]'
+                    : 'border border-cyan-500/30 hover:border-cyan-500/60 text-[var(--text-secondary)] hover:text-white'
+                }`}
+              >
+                {cta.label[lang]}
+                {cta.icon && (
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                )}
+              </Link>
+            ))}
           </motion.div>
 
           {/* Contact details */}
           <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-6 text-[var(--text-tertiary)] text-xs font-mono">
-            <a href="mailto:zaraspicesexport@gmail.com" className="hover:text-cyan-400 transition-colors">
-              zaraspicesexport@gmail.com
+            <a href={`mailto:${contact.email}`} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+              <span>✉</span> {contact.email}
             </a>
             <span className="w-1 h-1 rounded-full bg-cyan-500/20" />
-            <a href="tel:+261375930617" className="hover:text-cyan-400 transition-colors">
-              +261 37 59 306 17
-            </a>
+            {contact.phones.map((p, i) => (
+              <span key={i} className="flex items-center gap-1.5">
+                {i > 0 && <span className="w-1 h-1 rounded-full bg-cyan-500/20" />}
+                <a href={`tel:${p.replace(/\s/g, '')}`} className="hover:text-cyan-400 transition-colors">{p}</a>
+              </span>
+            ))}
             <span className="w-1 h-1 rounded-full bg-cyan-500/20" />
-            <a href="tel:+261347286235" className="hover:text-cyan-400 transition-colors">
-              +261 34 72 862 35
+            <a
+              href={`https://wa.me/${contact.phones[0].replace(/\s/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-[#25D366] hover:text-[#4be37f] transition-colors"
+            >
+              <span>📱</span> WhatsApp
             </a>
           </motion.div>
         </motion.div>
