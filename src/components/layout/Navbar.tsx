@@ -4,16 +4,19 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
+import { useCurrency } from '@/store/currency';
 
 const navLinks = {
   fr: [
     { href: '/', label: 'Accueil' },
+    { href: '/shop', label: 'Boutique' },
     { href: '/products', label: 'Produits' },
     { href: '/about', label: 'À Propos' },
     { href: '/contact', label: 'Contact' },
   ],
   en: [
     { href: '/', label: 'Home' },
+    { href: '/shop', label: 'Shop' },
     { href: '/products', label: 'Products' },
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
@@ -22,7 +25,8 @@ const navLinks = {
 
 export default function Navbar() {
   const { lang, toggle } = useLanguage();
-  const { totalItems, openCart } = useCart();
+  const { totalItems } = useCart();
+  const { currency, toggle: toggleCurrency } = useCurrency();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -78,6 +82,18 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-3">
+            {/* Currency toggle */}
+            <button
+              onClick={toggleCurrency}
+              className={`text-xs font-mono border border-white/8 rounded-lg px-2 py-1 transition-colors duration-300 ${
+                currency === 'EUR'
+                  ? 'text-[var(--text-tertiary)] hover:text-cyan-400'
+                  : 'text-[#a3ff12]/70 hover:text-[#a3ff12]'
+              }`}
+            >
+              {currency === 'EUR' ? 'EUR' : 'USD'}
+            </button>
+
             {/* Lang toggle */}
             <button
               onClick={toggle}
@@ -87,8 +103,8 @@ export default function Navbar() {
             </button>
 
             {/* Cart */}
-            <button
-              onClick={openCart}
+            <Link
+              href="/cart"
               className="relative w-9 h-9 flex items-center justify-center rounded-xl border border-[var(--border)] hover:border-cyan-500/30 transition-colors duration-300 group"
             >
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[var(--text-secondary)] group-hover:text-cyan-400 transition-colors">
@@ -101,7 +117,7 @@ export default function Navbar() {
                   {count}
                 </span>
               )}
-            </button>
+            </Link>
 
             {/* CTA */}
             <Link

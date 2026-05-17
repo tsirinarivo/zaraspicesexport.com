@@ -3,10 +3,26 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Product } from '@/lib/data';
 
+const priceBySlug: Record<string, number> = {
+  'vanille-tk': 86,
+  'vanille-gourmet': 96,
+  'vanille-pompona': 96,
+  'caviar-vanille': 240,
+  'poudre-vanille': 75,
+};
+
+function extractPrice(product: Product): number {
+  if (product.priceEur) return product.priceEur;
+  const match = product.price.match(/(\d+)/);
+  if (match) return parseInt(match[1], 10);
+  return priceBySlug[product.slug] ?? 0;
+}
+
 export interface CartItem {
   product: Product;
   quantity: number;
   weightKg: number;
+  priceEur: number;
 }
 
 interface CartStore {
@@ -15,11 +31,13 @@ interface CartStore {
   addItem: (product: Product, weightKg?: number) => void;
   removeItem: (productId: string) => void;
   updateWeight: (productId: string, weightKg: number) => void;
+  updateQuantity: (productId: string, qty: number) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
   totalItems: () => number;
   totalWeight: () => number;
+  totalPrice: () => number;
 }
 
 export const useCart = create<CartStore>()(
@@ -30,6 +48,7 @@ export const useCart = create<CartStore>()(
       addItem: (product, weightKg = 1) => {
         const items = get().items;
         const existing = items.find((i) => i.product.id === product.id);
+        const priceEur = extractPrice(product);
         if (existing) {
           set({
             items: items.map((i) =>
@@ -39,7 +58,7 @@ export const useCart = create<CartStore>()(
             ),
           });
         } else {
-          set({ items: [...items, { product, quantity: 1, weightKg }] });
+          set({ items: [...items, { product, quantity: 1, weightKg, priceEur }] });
         }
         set({ isOpen: true });
       },
@@ -48,7 +67,13 @@ export const useCart = create<CartStore>()(
       updateWeight: (productId, weightKg) =>
         set({
           items: get().items.map((i) =>
-            i.product.id === productId ? { ...i, weightKg } : i
+            i.product.id === productId ? { ...i, weightKg: Math.max(0.5, weightKg) } : i
+          ),
+        }),
+      updateQuantity: (productId, qty) =>
+        set({
+          items: get().items.map((i) =>
+            i.product.id === productId ? { ...i, quantity: Math.max(1, qty) } : i
           ),
         }),
       clearCart: () => set({ items: [] }),
@@ -56,6 +81,8 @@ export const useCart = create<CartStore>()(
       closeCart: () => set({ isOpen: false }),
       totalItems: () => get().items.reduce((acc, i) => acc + i.quantity, 0),
       totalWeight: () => get().items.reduce((acc, i) => acc + i.weightKg, 0),
+      totalPrice: () =>
+        get().items.reduce((acc, i) => acc + i.priceEur * i.weightKg, 0),
     }),
     { name: 'zara-cart' }
   )

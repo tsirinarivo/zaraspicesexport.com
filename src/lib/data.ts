@@ -12,6 +12,7 @@ export interface Product {
   tagline: { fr: string; en: string };
   description: { fr: string; en: string };
   price: string;
+  priceEur: number;
   priceNote?: { fr: string; en: string };
   category: 'vanilla' | 'spices' | 'derivatives';
   featured: boolean;
@@ -46,6 +47,7 @@ export const products: Product[] = [
       en: 'Vanilla beans intended for processing and industrial use. A powerful aroma for extraction, processing and food industry applications.',
     },
     price: '86€/kg',
+    priceEur: 86,
     priceNote: { fr: 'à partir de', en: 'from' },
     category: 'vanilla',
     featured: true,
@@ -71,6 +73,7 @@ export const products: Product[] = [
       en: 'Plump, flexible, and glossy beans intended for high-end markets. An intense, well-rounded, naturally sweet aroma.',
     },
     price: '96€/kg',
+    priceEur: 96,
     priceNote: { fr: 'à partir de', en: 'from' },
     category: 'vanilla',
     featured: true,
@@ -96,6 +99,7 @@ export const products: Product[] = [
       en: 'A rare variety with a distinctive aromatic profile. Thick and wide beans with floral, mild notes for specialty markets.',
     },
     price: '96€/kg',
+    priceEur: 96,
     priceNote: { fr: 'à partir de', en: 'from' },
     category: 'vanilla',
     featured: true,
@@ -121,6 +125,7 @@ export const products: Product[] = [
       en: 'Seeds extracted from ripe pods, concentrating the aromatic essence of vanilla. For gastronomy and premium desserts.',
     },
     price: '240€/kg',
+    priceEur: 240,
     category: 'derivatives',
     featured: true,
     gradient: 'from-stone-950 via-zinc-900 to-stone-950',
@@ -145,6 +150,7 @@ export const products: Product[] = [
       en: 'Natural vanilla powder obtained from dried and finely ground pods, with no additives. 100% pure.',
     },
     price: '75€/kg',
+    priceEur: 75,
     priceNote: { fr: 'à partir de', en: 'from' },
     category: 'derivatives',
     featured: false,
