@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
 import { useLanguage } from '@/store/language';
+import FloatingBotanicals from '@/components/ui/FloatingBotanicals';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -30,6 +31,9 @@ export default function Hero() {
             'radial-gradient(ellipse 60% 70% at 30% 50%, rgba(0,229,255,0.08) 0%, transparent 60%), linear-gradient(to bottom, #060e1c, #0a1628)',
         }}
       />
+
+      {/* Botanical particles */}
+      <FloatingBotanicals count={12} />
 
       {/* Subtle grid */}
       <div
