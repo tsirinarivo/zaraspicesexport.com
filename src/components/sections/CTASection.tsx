@@ -1,88 +1,102 @@
 'use client';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
-import MagneticButton from '@/components/ui/MagneticButton';
-import SplitText from '@/components/ui/SplitText';
-import RevealOnScroll from '@/components/ui/RevealOnScroll';
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
+};
 
 export default function CTASection() {
   const { lang } = useLanguage();
 
   return (
-    <section className="relative bg-obsidian py-40 overflow-hidden">
-      {/* Gold radial glow */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-[600px] h-[600px] rounded-full bg-gold/[0.04] blur-3xl" />
-      </div>
+    <section className="relative overflow-hidden py-32">
+      {/* Background gradient */}
+      <div
+        aria-hidden
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 70% 80% at 50% 50%, rgba(0,229,255,0.06) 0%, transparent 70%), linear-gradient(to bottom, #0a1628, #0d1f3c, #0a1628)',
+        }}
+      />
 
       {/* Border frame */}
-      <div className="absolute inset-8 md:inset-16 border border-gold/8 pointer-events-none" />
-      <div className="absolute top-8 md:top-16 left-8 md:left-16 w-12 h-12 border-t border-l border-gold/20" />
-      <div className="absolute bottom-8 md:bottom-16 right-8 md:right-16 w-12 h-12 border-b border-r border-gold/20" />
+      <div className="absolute inset-8 md:inset-16 border border-cyan-500/5 pointer-events-none rounded-3xl" />
+      <div className="absolute top-8 md:top-16 left-8 md:left-16 w-12 h-12 border-t border-l border-cyan-500/15 rounded-tl-xl" />
+      <div className="absolute bottom-8 md:bottom-16 right-8 md:right-16 w-12 h-12 border-b border-r border-cyan-500/15 rounded-br-xl" />
 
-      <div className="container mx-auto px-6 text-center relative z-10">
-        <RevealOnScroll>
-          <span className="text-gold/60 text-[10px] tracking-[0.5em] uppercase block mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+        >
+          <motion.span variants={fadeUp} className="text-xs font-mono uppercase tracking-widest text-cyan-500 block mb-6">
             {lang === 'fr' ? 'Travailler Ensemble' : 'Work Together'}
-          </span>
-        </RevealOnScroll>
+          </motion.span>
 
-        <SplitText
-          text={lang === 'fr' ? 'Prêt à Commander ?' : 'Ready to Order?'}
-          className="font-serif text-cream text-[clamp(2.5rem,6vw,5rem)] leading-tight mb-6"
-          delay={0.1}
-        />
+          <motion.h2
+            variants={fadeUp}
+            className="font-display font-black text-[clamp(2.5rem,6vw,5rem)] tracking-tight leading-[1.0] mb-6"
+          >
+            <span className="text-[var(--text-primary)]">
+              {lang === 'fr' ? 'Prêt à ' : 'Ready to '}
+            </span>
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              {lang === 'fr' ? 'Commander' : 'Order'}
+            </span>
+            <span className="text-[var(--text-primary)]"> ?</span>
+          </motion.h2>
 
-        <RevealOnScroll delay={0.2}>
-          <p className="text-cream/40 max-w-lg mx-auto mb-12 leading-relaxed">
+          <motion.p variants={fadeUp} className="text-[var(--text-secondary)] max-w-lg mx-auto mb-12 leading-relaxed">
             {lang === 'fr'
-              ? 'Nos prix s\'ajustent selon la quantité commandée. Contactez-nous pour obtenir un devis personnalisé adapté à vos besoins.'
+              ? "Nos prix s'ajustent selon la quantité commandée. Contactez-nous pour obtenir un devis personnalisé adapté à vos besoins."
               : 'Our prices adjust based on order quantity. Contact us for a personalized quote tailored to your needs.'}
-          </p>
-        </RevealOnScroll>
+          </motion.p>
 
-        <RevealOnScroll delay={0.3}>
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <MagneticButton>
-              <Link
-                href="/contact"
-                className="group flex items-center gap-4 bg-gold text-obsidian px-10 py-5 text-xs tracking-[0.3em] uppercase font-medium hover:bg-cream transition-colors duration-300"
-              >
-                {lang === 'fr' ? 'Demander un Devis' : 'Request a Quote'}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Link>
-            </MagneticButton>
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4 mb-16">
+            <Link
+              href="/contact"
+              className="group flex items-center gap-3 bg-cyan-500 hover:bg-cyan-400 text-[#0a1628] font-semibold px-8 py-4 rounded-xl transition-colors duration-300 text-sm"
+            >
+              {lang === 'fr' ? 'Demander un Devis' : 'Request a Quote'}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </Link>
 
-            <MagneticButton>
-              <Link
-                href="/products"
-                className="group flex items-center gap-4 border border-gold/30 hover:border-gold text-cream/60 hover:text-gold px-10 py-5 text-xs tracking-[0.3em] uppercase transition-all duration-300"
-              >
-                {lang === 'fr' ? 'Explorer les Produits' : 'Explore Products'}
-              </Link>
-            </MagneticButton>
-          </div>
-        </RevealOnScroll>
+            <Link
+              href="/products"
+              className="flex items-center gap-3 border border-cyan-500/30 hover:border-cyan-500/60 text-[var(--text-secondary)] hover:text-white px-8 py-4 rounded-xl transition-all duration-300 text-sm"
+            >
+              {lang === 'fr' ? 'Explorer les Produits' : 'Explore Products'}
+            </Link>
+          </motion.div>
 
-        {/* Contact details */}
-        <RevealOnScroll delay={0.4}>
-          <div className="mt-16 flex flex-wrap items-center justify-center gap-8 text-cream/20 text-xs tracking-wider">
-            <a href="mailto:zaraspicesexport@gmail.com" className="hover:text-gold transition-colors">
+          {/* Contact details */}
+          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-6 text-[var(--text-tertiary)] text-xs font-mono">
+            <a href="mailto:zaraspicesexport@gmail.com" className="hover:text-cyan-400 transition-colors">
               zaraspicesexport@gmail.com
             </a>
-            <span className="w-1 h-1 rounded-full bg-gold/20" />
-            <a href="tel:+261375930617" className="hover:text-gold transition-colors">
+            <span className="w-1 h-1 rounded-full bg-cyan-500/20" />
+            <a href="tel:+261375930617" className="hover:text-cyan-400 transition-colors">
               +261 37 59 306 17
             </a>
-            <span className="w-1 h-1 rounded-full bg-gold/20" />
-            <a href="tel:+261347286235" className="hover:text-gold transition-colors">
+            <span className="w-1 h-1 rounded-full bg-cyan-500/20" />
+            <a href="tel:+261347286235" className="hover:text-cyan-400 transition-colors">
               +261 34 72 862 35
             </a>
-          </div>
-        </RevealOnScroll>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

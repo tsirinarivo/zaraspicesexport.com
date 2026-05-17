@@ -1,12 +1,19 @@
 'use client';
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
 import { contact, products } from '@/lib/data';
-import RevealOnScroll from '@/components/ui/RevealOnScroll';
-import SplitText from '@/components/ui/SplitText';
-import MagneticButton from '@/components/ui/MagneticButton';
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+};
 
 interface FormData {
   name: string;
@@ -79,36 +86,45 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('sending');
-
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setStatus('sent');
   };
 
   const inputClass =
-    'w-full bg-white/[0.03] border border-gold/15 focus:border-gold/40 text-cream placeholder:text-cream/20 px-5 py-3.5 text-sm outline-none transition-colors duration-300';
+    'w-full bg-white/5 border border-white/8 focus:border-cyan-500/40 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] px-5 py-3.5 text-sm outline-none transition-colors duration-300 rounded-xl';
+
+  const labelClass = 'text-xs font-mono uppercase tracking-widest text-[var(--text-tertiary)] block mb-2';
 
   return (
-    <main className="min-h-screen bg-obsidian pt-32 pb-24">
-      <div className="container mx-auto px-6">
+    <main className="min-h-screen bg-[var(--bg)] pt-28 pb-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-20">
-          <RevealOnScroll>
-            <span className="text-gold/60 text-[10px] tracking-[0.5em] uppercase block mb-6">
-              {tx.subtitle}
+        <motion.div
+          className="mb-16"
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
+          <motion.span variants={fadeUp} className="text-xs font-mono uppercase tracking-widest text-cyan-500 block mb-3">
+            {tx.subtitle}
+          </motion.span>
+          <motion.h1
+            variants={fadeUp}
+            className="font-display font-black text-[clamp(2.5rem,6vw,5rem)] tracking-tight leading-[0.9] mb-5"
+          >
+            <span className="text-[var(--text-primary)]">
+              {lang === 'fr' ? 'Demande de ' : 'Request a '}
             </span>
-          </RevealOnScroll>
-          <SplitText
-            text={tx.title}
-            className="font-serif text-cream text-[clamp(2.5rem,6vw,5rem)] leading-[0.9] mb-6"
-            delay={0.1}
-          />
-          <RevealOnScroll delay={0.2}>
-            <p className="text-cream/40 max-w-md text-sm leading-relaxed">{tx.desc}</p>
-          </RevealOnScroll>
-        </div>
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+              {lang === 'fr' ? 'Devis' : 'Quote'}
+            </span>
+          </motion.h1>
+          <motion.p variants={fadeUp} className="text-[var(--text-secondary)] max-w-md text-sm leading-relaxed">
+            {tx.desc}
+          </motion.p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Form */}
           <div className="lg:col-span-2">
             <AnimatePresence mode="wait">
@@ -123,210 +139,212 @@ export default function ContactPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', delay: 0.2 }}
-                    className="w-20 h-20 border border-gold/40 rotate-45 mb-8 flex items-center justify-center"
+                    className="w-20 h-20 rounded-2xl border border-cyan-500/40 mb-8 flex items-center justify-center bg-cyan-500/10"
                   >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gold -rotate-45">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-cyan-400">
                       <path d="M20 6L9 17l-5-5" />
                     </svg>
                   </motion.div>
-                  <h3 className="font-serif text-gold text-3xl mb-4">{tx.success}</h3>
-                  <p className="text-cream/40">{tx.successMsg}</p>
+                  <h3 className="font-display font-bold text-cyan-400 text-3xl mb-4">{tx.success}</h3>
+                  <p className="text-[var(--text-secondary)]">{tx.successMsg}</p>
                 </motion.div>
               ) : (
                 <motion.form
                   key="form"
                   onSubmit={handleSubmit}
                   className="space-y-4"
+                  initial="hidden"
+                  animate="visible"
+                  variants={staggerContainer}
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <RevealOnScroll>
-                      <div>
-                        <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.name}</label>
-                        <input
-                          type="text"
-                          required
-                          value={form.name}
-                          onChange={(e) => setForm({ ...form, name: e.target.value })}
-                          className={inputClass}
-                          placeholder="Jean Dupont"
-                        />
-                      </div>
-                    </RevealOnScroll>
-                    <RevealOnScroll delay={0.05}>
-                      <div>
-                        <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.company}</label>
-                        <input
-                          type="text"
-                          value={form.company}
-                          onChange={(e) => setForm({ ...form, company: e.target.value })}
-                          className={inputClass}
-                          placeholder="Acme Corp"
-                        />
-                      </div>
-                    </RevealOnScroll>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <RevealOnScroll delay={0.07}>
-                      <div>
-                        <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.email}</label>
-                        <input
-                          type="email"
-                          required
-                          value={form.email}
-                          onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className={inputClass}
-                          placeholder="jean@example.com"
-                        />
-                      </div>
-                    </RevealOnScroll>
-                    <RevealOnScroll delay={0.09}>
-                      <div>
-                        <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.phone}</label>
-                        <input
-                          type="tel"
-                          value={form.phone}
-                          onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                          className={inputClass}
-                          placeholder="+33 6 00 00 00 00"
-                        />
-                      </div>
-                    </RevealOnScroll>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <RevealOnScroll delay={0.11}>
-                      <div>
-                        <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.country}</label>
-                        <input
-                          type="text"
-                          required
-                          value={form.country}
-                          onChange={(e) => setForm({ ...form, country: e.target.value })}
-                          className={inputClass}
-                          placeholder="France"
-                        />
-                      </div>
-                    </RevealOnScroll>
-                    <RevealOnScroll delay={0.13}>
-                      <div>
-                        <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.quantity}</label>
-                        <input
-                          type="text"
-                          value={form.quantity}
-                          onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-                          className={inputClass}
-                          placeholder="ex: 10 kg"
-                        />
-                      </div>
-                    </RevealOnScroll>
-                  </div>
-
-                  <RevealOnScroll delay={0.15}>
+                  <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.product}</label>
-                      <select
-                        value={form.product}
-                        onChange={(e) => setForm({ ...form, product: e.target.value })}
-                        className={`${inputClass} appearance-none`}
-                      >
-                        <option value="">{tx.select}</option>
-                        {products.map((p) => (
-                          <option key={p.id} value={p.slug}>
-                            {p.name[lang]}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </RevealOnScroll>
-
-                  <RevealOnScroll delay={0.17}>
-                    <div>
-                      <label className="text-cream/30 text-[10px] tracking-[0.3em] uppercase block mb-2">{tx.message}</label>
-                      <textarea
-                        rows={5}
-                        value={form.message}
-                        onChange={(e) => setForm({ ...form, message: e.target.value })}
-                        className={`${inputClass} resize-none`}
-                        placeholder={lang === 'fr' ? 'Vos besoins spécifiques, conditionnement souhaité...' : 'Your specific needs, desired packaging...'}
+                      <label className={labelClass}>{tx.name}</label>
+                      <input
+                        type="text"
+                        required
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        className={inputClass}
+                        placeholder="Jean Dupont"
                       />
                     </div>
-                  </RevealOnScroll>
+                    <div>
+                      <label className={labelClass}>{tx.company}</label>
+                      <input
+                        type="text"
+                        value={form.company}
+                        onChange={(e) => setForm({ ...form, company: e.target.value })}
+                        className={inputClass}
+                        placeholder="Acme Corp"
+                      />
+                    </div>
+                  </motion.div>
 
-                  <RevealOnScroll delay={0.19}>
-                    <MagneticButton className="w-full md:w-auto">
-                      <button
-                        type="submit"
-                        disabled={status === 'sending'}
-                        className="w-full md:w-auto flex items-center justify-center gap-4 bg-gold text-obsidian px-12 py-5 text-xs tracking-[0.3em] uppercase font-medium hover:bg-cream transition-colors duration-300 disabled:opacity-50"
-                      >
-                        {status === 'sending' ? tx.sending : tx.send}
-                      </button>
-                    </MagneticButton>
-                  </RevealOnScroll>
+                  <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClass}>{tx.email}</label>
+                      <input
+                        type="email"
+                        required
+                        value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        className={inputClass}
+                        placeholder="jean@example.com"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>{tx.phone}</label>
+                      <input
+                        type="tel"
+                        value={form.phone}
+                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                        className={inputClass}
+                        placeholder="+33 6 00 00 00 00"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClass}>{tx.country}</label>
+                      <input
+                        type="text"
+                        required
+                        value={form.country}
+                        onChange={(e) => setForm({ ...form, country: e.target.value })}
+                        className={inputClass}
+                        placeholder="France"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>{tx.quantity}</label>
+                      <input
+                        type="text"
+                        value={form.quantity}
+                        onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+                        className={inputClass}
+                        placeholder="ex: 10 kg"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div variants={fadeUp}>
+                    <label className={labelClass}>{tx.product}</label>
+                    <select
+                      value={form.product}
+                      onChange={(e) => setForm({ ...form, product: e.target.value })}
+                      className={`${inputClass} appearance-none bg-[#0d1f3c]`}
+                    >
+                      <option value="">{tx.select}</option>
+                      {products.map((p) => (
+                        <option key={p.id} value={p.slug}>
+                          {p.name[lang]}
+                        </option>
+                      ))}
+                    </select>
+                  </motion.div>
+
+                  <motion.div variants={fadeUp}>
+                    <label className={labelClass}>{tx.message}</label>
+                    <textarea
+                      rows={5}
+                      value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      className={`${inputClass} resize-none`}
+                      placeholder={lang === 'fr' ? 'Vos besoins spécifiques, conditionnement souhaité...' : 'Your specific needs, desired packaging...'}
+                    />
+                  </motion.div>
+
+                  <motion.div variants={fadeUp}>
+                    <button
+                      type="submit"
+                      disabled={status === 'sending'}
+                      className="flex items-center justify-center gap-3 bg-cyan-500 hover:bg-cyan-400 text-[#0a1628] font-semibold px-10 py-4 rounded-xl transition-colors duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {status === 'sending' ? (
+                        <>
+                          <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
+                            <path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" className="opacity-75" />
+                          </svg>
+                          {tx.sending}
+                        </>
+                      ) : (
+                        <>
+                          {tx.send}
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  </motion.div>
                 </motion.form>
               )}
             </AnimatePresence>
           </div>
 
           {/* Sidebar */}
-          <div>
-            <RevealOnScroll direction="left" delay={0.2}>
-              <div className="space-y-8 sticky top-32">
-                <div>
-                  <p className="text-gold/60 text-[10px] tracking-[0.4em] uppercase mb-4">Email</p>
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <div className="space-y-6 sticky top-28">
+              <motion.div variants={fadeUp} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 hover:border-cyan-500/20 transition-colors duration-300">
+                <p className="text-xs font-mono uppercase tracking-widest text-cyan-500 mb-3">Email</p>
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="text-[var(--text-secondary)] hover:text-white text-sm transition-colors duration-300 break-all"
+                >
+                  {contact.email}
+                </a>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 hover:border-cyan-500/20 transition-colors duration-300">
+                <p className="text-xs font-mono uppercase tracking-widest text-cyan-500 mb-3">
+                  {lang === 'fr' ? 'Téléphone' : 'Phone'}
+                </p>
+                {contact.phones.map((phone) => (
                   <a
-                    href={`mailto:${contact.email}`}
-                    className="text-cream/60 hover:text-gold text-sm transition-colors duration-300 break-all"
+                    key={phone}
+                    href={`tel:${phone.replace(/\s/g, '')}`}
+                    className="block text-[var(--text-secondary)] hover:text-white text-sm transition-colors duration-300 mb-1.5 font-mono"
                   >
-                    {contact.email}
+                    {phone}
                   </a>
-                </div>
+                ))}
+              </motion.div>
 
-                <div>
-                  <p className="text-gold/60 text-[10px] tracking-[0.4em] uppercase mb-4">
-                    {lang === 'fr' ? 'Téléphone' : 'Phone'}
-                  </p>
-                  {contact.phones.map((phone) => (
-                    <a
-                      key={phone}
-                      href={`tel:${phone.replace(/\s/g, '')}`}
-                      className="block text-cream/60 hover:text-gold text-sm transition-colors duration-300 mb-1"
-                    >
-                      {phone}
-                    </a>
+              <motion.div variants={fadeUp} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 hover:border-cyan-500/20 transition-colors duration-300">
+                <p className="text-xs font-mono uppercase tracking-widest text-cyan-500 mb-3">
+                  {lang === 'fr' ? 'Origines' : 'Origins'}
+                </p>
+                {contact.regions[lang].map((region) => (
+                  <p key={region} className="text-[var(--text-secondary)] text-sm mb-1">{region}</p>
+                ))}
+                <p className="text-[var(--text-tertiary)] text-xs font-mono mt-2">Madagascar</p>
+              </motion.div>
+
+              <motion.div variants={fadeUp} className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 hover:border-cyan-500/20 transition-colors duration-300">
+                <p className="text-xs font-mono uppercase tracking-widest text-cyan-500 mb-3">Facebook</p>
+                <p className="text-[var(--text-secondary)] text-sm">{contact.facebook}</p>
+              </motion.div>
+
+              {/* Certif badges */}
+              <motion.div variants={fadeUp} className="pt-2">
+                <p className="text-[var(--text-tertiary)] text-[10px] font-mono tracking-wider mb-3">Certifié REX · Agrément Export</p>
+                <div className="flex gap-2 flex-wrap">
+                  {['REX', 'Export', 'Quality'].map((badge) => (
+                    <span key={badge} className="text-xs font-mono tracking-wider border border-cyan-500/15 text-cyan-400/50 px-2.5 py-1 rounded-lg">
+                      {badge}
+                    </span>
                   ))}
                 </div>
-
-                <div>
-                  <p className="text-gold/60 text-[10px] tracking-[0.4em] uppercase mb-4">
-                    {lang === 'fr' ? 'Origines' : 'Origins'}
-                  </p>
-                  {contact.regions[lang].map((region) => (
-                    <p key={region} className="text-cream/40 text-sm mb-1">{region}</p>
-                  ))}
-                  <p className="text-cream/20 text-xs mt-2">Madagascar</p>
-                </div>
-
-                <div>
-                  <p className="text-gold/60 text-[10px] tracking-[0.4em] uppercase mb-4">Facebook</p>
-                  <p className="text-cream/40 text-sm">{contact.facebook}</p>
-                </div>
-
-                {/* Certif badges */}
-                <div className="pt-4 border-t border-gold/10">
-                  <p className="text-cream/20 text-[10px] tracking-wider mb-3">Certifié REX · Agrément Export</p>
-                  <div className="flex gap-2">
-                    {['REX', 'Export', 'Quality'].map((badge) => (
-                      <span key={badge} className="text-[9px] tracking-wider border border-gold/15 text-gold/40 px-2 py-1">
-                        {badge}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </RevealOnScroll>
-          </div>
+              </motion.div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </main>
