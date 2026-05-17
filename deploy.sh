@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
-# deploy.sh — Déploiement Zara Spices Export sur VPS
+# deploy.sh — Mise à jour Zara Spices Export (après install initiale)
 # Usage: bash deploy.sh
 
 set -e
+cd "$(dirname "$0")"
 
 echo "▶ Pull dernière version..."
 git pull origin claude/ecommerce-full-stack-design-umvTK
 
-echo "▶ Build & restart conteneur Docker..."
+echo "▶ Rebuild & restart conteneur..."
 docker compose down
 docker compose build --no-cache
 docker compose up -d
 
-echo "▶ Vérification santé du conteneur..."
+echo "▶ Statut :"
 sleep 5
 docker compose ps
-docker compose logs --tail=20
+docker compose logs --tail=15
 
-echo "✓ Déploiement terminé — https://epice.dago-cloud.com"
+echo "✓ Déployé → https://epice.dago-cloud.com"
