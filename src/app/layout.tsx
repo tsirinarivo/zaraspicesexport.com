@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer';
 import CartDrawer from '@/components/layout/CartDrawer';
 import SmoothScroll from '@/components/layout/SmoothScroll';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
+import ScrollProgress from '@/components/ui/ScrollProgress';
 
 const spaceGrotesk = Space_Grotesk({ variable: '--font-space-grotesk', subsets: ['latin'], display: 'swap' });
 const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-[var(--bg)] text-[var(--text-primary)] antialiased">
         <SmoothScroll>
+          <ScrollProgress />
           <Navbar />
           {children}
           <Footer />

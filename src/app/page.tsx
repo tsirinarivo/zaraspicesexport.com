@@ -1,4 +1,5 @@
 import Hero from '@/components/sections/Hero';
+import HorizontalProducts from '@/components/sections/HorizontalProducts';
 import ProductsShowcase from '@/components/sections/ProductsShowcase';
 import AboutSection from '@/components/sections/AboutSection';
 import BiodiversitySection from '@/components/sections/BiodiversitySection';
@@ -15,6 +16,7 @@ export default function HomePage() {
   return (
     <main>
       <Hero />
+      <HorizontalProducts />
       <ProductsShowcase />
       <BiodiversitySection />
       <ProcessSection />
