@@ -194,6 +194,9 @@ export default function Footer() {
             <p className="text-[var(--text-tertiary)]/40 text-xs font-mono tracking-widest uppercase">
               From the source to the world
             </p>
+            <Link href="/admin" className="text-[var(--text-tertiary)]/20 hover:text-[var(--text-tertiary)]/60 text-[10px] font-mono tracking-widest uppercase transition-colors duration-300">
+              Admin
+            </Link>
           </div>
         </div>
       </div>
