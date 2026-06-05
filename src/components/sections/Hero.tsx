@@ -12,18 +12,26 @@ export default function Hero() {
 
   useGSAP(
     () => {
+      // Establish initial hidden states (GSAP owns this, not JSX)
+      gsap.set('.hero-label', { autoAlpha: 0, y: 12 });
+      gsap.set('.hero-subtitle', { autoAlpha: 0, y: 20 });
+      gsap.set('.hero-cta', { autoAlpha: 0, y: 16 });
+      gsap.set('.hero-stat', { autoAlpha: 0, y: 12 });
+      gsap.set('.hero-scroll', { autoAlpha: 0 });
+      gsap.set('.hero-word', { yPercent: 110 });
+
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       tl.from('.hero-vline', { scaleY: 0, duration: 1.2, stagger: 0.15, transformOrigin: 'top center' })
-        .from('.hero-label', { autoAlpha: 0, y: 12, duration: 0.6 }, '-=0.6')
+        .to('.hero-label', { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.6')
         .from('.hero-hline', { scaleX: 0, duration: 0.5, stagger: 0.1, transformOrigin: 'left center' }, '-=0.3')
-        .from('.hero-word', { yPercent: 110, duration: 0.7, stagger: 0.07, ease: 'power4.out' }, '-=0.3')
-        .from('.hero-subtitle', { autoAlpha: 0, y: 20, duration: 0.6 }, '-=0.3')
-        .from('.hero-cta', { autoAlpha: 0, y: 16, duration: 0.5, stagger: 0.1 }, '-=0.4')
-        .from('.hero-stat', { autoAlpha: 0, y: 12, duration: 0.5, stagger: 0.08 }, '-=0.3')
-        .from('.hero-scroll', { autoAlpha: 0, y: -10, duration: 0.6 }, '-=0.2');
+        .to('.hero-word', { yPercent: 0, duration: 0.7, stagger: 0.07, ease: 'power4.out' }, '-=0.3')
+        .to('.hero-subtitle', { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .to('.hero-cta', { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }, '-=0.4')
+        .to('.hero-stat', { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08 }, '-=0.3')
+        .to('.hero-scroll', { autoAlpha: 1, duration: 0.6 }, '-=0.2');
 
-      // Infinite bounce on scroll indicator line
+      // Infinite bounce on scroll indicator
       gsap.to('.hero-scroll-line', {
         y: 8,
         duration: 1.5,
@@ -84,7 +92,7 @@ export default function Hero() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative py-20 w-full">
         <div className="max-w-4xl">
           {/* Label row */}
-          <div className="hero-label flex items-center gap-3 mb-8" style={{ opacity: 0 }}>
+          <div className="hero-label flex items-center gap-3 mb-8">
             <div className="hero-hline w-8 h-px bg-cyan-500/60" />
             <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">
               Madagascar · {lang === 'fr' ? 'Depuis 2017' : 'Since 2017'}
@@ -124,7 +132,6 @@ export default function Hero() {
           {/* Subtitle */}
           <p
             className="hero-subtitle text-[var(--text-secondary)] text-base md:text-lg max-w-md leading-relaxed mb-12"
-            style={{ opacity: 0 }}
           >
             {lang === 'fr'
               ? 'De la source au monde — Vanille, cacao, girofle et épices rares de Madagascar, sélectionnés avec exigence.'
@@ -136,7 +143,6 @@ export default function Hero() {
             <Link
               href="/products"
               className="hero-cta group flex items-center gap-3 bg-cyan-500 hover:bg-cyan-400 text-[#0a1628] font-semibold px-7 py-3.5 rounded-xl transition-colors duration-300 text-sm"
-              style={{ opacity: 0 }}
             >
               {lang === 'fr' ? 'Découvrir' : 'Discover'}
               <svg
@@ -154,7 +160,6 @@ export default function Hero() {
             <Link
               href="/contact"
               className="hero-cta group flex items-center gap-3 border border-cyan-500/30 hover:border-cyan-500/60 text-[var(--text-secondary)] hover:text-white px-7 py-3.5 rounded-xl transition-all duration-300 text-sm"
-              style={{ opacity: 0 }}
             >
               {lang === 'fr' ? 'Nous Contacter' : 'Contact Us'}
             </Link>
@@ -167,7 +172,7 @@ export default function Hero() {
               { num: '5+', label: lang === 'fr' ? 'Produits' : 'Products' },
               { num: '100%', label: lang === 'fr' ? 'Traçable' : 'Traceable' },
             ].map((stat) => (
-              <div key={stat.num} className="hero-stat" style={{ opacity: 0 }}>
+              <div key={stat.num} className="hero-stat">
                 <p className="font-display font-black text-2xl text-cyan-400 leading-none">{stat.num}</p>
                 <p className="text-[var(--text-tertiary)] text-xs font-mono uppercase tracking-widest mt-1">
                   {stat.label}
@@ -181,7 +186,6 @@ export default function Hero() {
       {/* Scroll indicator */}
       <div
         className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        style={{ opacity: 0 }}
       >
         <div className="hero-scroll-line w-px h-10 bg-gradient-to-b from-cyan-500/40 to-transparent" />
       </div>

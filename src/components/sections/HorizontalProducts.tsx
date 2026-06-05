@@ -35,16 +35,17 @@ export default function HorizontalProducts() {
         },
       });
 
-      // Card reveal stagger as section enters
-      gsap.from('.hprod-card', {
-        autoAlpha: 0,
-        y: 40,
-        stagger: 0.12,
+      // Hide cards first, then reveal with stagger when section enters view
+      gsap.set('.hprod-card', { autoAlpha: 0, y: 40 });
+      gsap.to('.hprod-card', {
+        autoAlpha: 1,
+        y: 0,
+        stagger: 0.1,
         duration: 0.7,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: wrapper,
-          start: 'top 80%',
+          start: 'top 85%',
           once: true,
         },
       });
@@ -94,7 +95,6 @@ export default function HorizontalProducts() {
               key={product.id}
               href={`/products/${product.slug}`}
               className="hprod-card group flex-none w-[320px] rounded-2xl overflow-hidden border border-white/5 hover:border-cyan-500/30 transition-all duration-500 bg-[var(--surface)]"
-              style={{ opacity: 0 }}
             >
               {/* Card gradient top */}
               <div
@@ -175,7 +175,7 @@ export default function HorizontalProducts() {
           ))}
 
           {/* End card — CTA */}
-          <div className="hprod-card flex-none w-[280px] rounded-2xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-4 p-8 text-center" style={{ opacity: 0 }}>
+          <div className="hprod-card flex-none w-[280px] rounded-2xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-4 p-8 text-center">
             <div className="w-12 h-12 rounded-full border border-cyan-500/30 flex items-center justify-center">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" strokeWidth="1.5">
                 <path d="M12 5v14M5 12h14" />
