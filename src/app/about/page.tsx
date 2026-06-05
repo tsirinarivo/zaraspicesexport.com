@@ -1,7 +1,8 @@
 'use client';
 import { motion, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
-import { values, certifications, contact } from '@/lib/data';
+import { values, certifications } from '@/lib/data';
+import { useSiteContent } from '@/lib/site-data';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -15,6 +16,11 @@ const staggerContainer: Variants = {
 
 export default function AboutPage() {
   const { lang } = useLanguage();
+  const liveContact = useSiteContent().contact;
+  const contact = {
+    email: liveContact.email,
+    phones: [liveContact.phone1, liveContact.phone2].filter(Boolean),
+  };
 
   return (
     <main className="min-h-screen bg-[var(--bg)] pt-28 pb-24">

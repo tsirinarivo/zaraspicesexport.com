@@ -4,7 +4,7 @@ import { motion, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
 import type { Product } from '@/lib/data';
-import { products } from '@/lib/data';
+import { useProducts } from '@/lib/site-data';
 import RadarChart from '@/components/ui/RadarChart';
 
 const fadeUp: Variants = {
@@ -20,6 +20,7 @@ const staggerContainer: Variants = {
 export default function ProductDetail({ product }: { product: Product }) {
   const { lang } = useLanguage();
   const { addItem } = useCart();
+  const products = useProducts();
   const related = products.filter((p) => p.id !== product.id && p.category === product.category).slice(0, 3);
 
   return (

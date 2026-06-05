@@ -9,9 +9,19 @@ services:
       - "127.0.0.1:3010:3000"   # loopback only — nginx proxie depuis l'hôte
     environment:
       - NODE_ENV=production
+      - DATA_DIR=/app/data
+      # Mot de passe de l'espace admin (/admin). À changer en production !
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-zaraspices2024}
+      # Secret de signature des sessions admin (optionnel mais recommandé).
+      - ADMIN_SECRET=${ADMIN_SECRET:-}
+    volumes:
+      - zara-data:/app/data     # persiste produits / commandes / contenu
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 20s
+
+volumes:
+  zara-data:

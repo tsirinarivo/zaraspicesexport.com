@@ -4,10 +4,12 @@ import { useGSAP } from '@gsap/react';
 import { gsap } from '@/lib/gsap';
 import Link from 'next/link';
 import { useLanguage } from '@/store/language';
+import { useSiteContent } from '@/lib/site-data';
 import FloatingBotanicals from '@/components/ui/FloatingBotanicals';
 
 export default function Hero() {
   const { lang } = useLanguage();
+  const hero = useSiteContent().hero;
   const heroRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -44,16 +46,10 @@ export default function Hero() {
     { scope: heroRef }
   );
 
-  const titleWords =
-    lang === 'fr'
-      ? [
-          { text: 'Épices', accent: false },
-          { text: 'Malagasy', accent: true },
-        ]
-      : [
-          { text: 'Spices', accent: false },
-          { text: 'Malagasy', accent: true },
-        ];
+  const titleWords = [
+    { text: hero.titleLine1a[lang], accent: false },
+    { text: hero.titleLine1b[lang], accent: true },
+  ];
 
   return (
     <section ref={heroRef} className="relative overflow-hidden min-h-screen flex items-center">
@@ -95,7 +91,7 @@ export default function Hero() {
           <div className="hero-label flex items-center gap-3 mb-8">
             <div className="hero-hline w-8 h-px bg-cyan-500/60" />
             <span className="text-xs font-mono uppercase tracking-widest text-cyan-400">
-              Madagascar · {lang === 'fr' ? 'Depuis 2017' : 'Since 2017'}
+              Madagascar · {hero.badge[lang]}
             </span>
             <div className="hero-hline w-8 h-px bg-cyan-500/60" />
           </div>
@@ -124,7 +120,7 @@ export default function Hero() {
           <h1 className="font-display font-black text-[clamp(2.5rem,6vw,5rem)] tracking-tight leading-[1.05] mb-8">
             <span className="inline-block overflow-hidden align-bottom">
               <span className="hero-word inline-block text-[var(--text-primary)]/20">
-                {lang === 'fr' ? "D'Excellence" : 'Of Excellence'}
+                {hero.titleLine2[lang]}
               </span>
             </span>
           </h1>
@@ -133,9 +129,7 @@ export default function Hero() {
           <p
             className="hero-subtitle text-[var(--text-secondary)] text-base md:text-lg max-w-md leading-relaxed mb-12"
           >
-            {lang === 'fr'
-              ? 'De la source au monde — Vanille, cacao, girofle et épices rares de Madagascar, sélectionnés avec exigence.'
-              : 'From the source to the world — Vanilla, cocoa, cloves and rare spices from Madagascar, selected with rigour.'}
+            {hero.subtitle[lang]}
           </p>
 
           {/* CTAs */}
@@ -144,7 +138,7 @@ export default function Hero() {
               href="/products"
               className="hero-cta group flex items-center gap-3 bg-cyan-500 hover:bg-cyan-400 text-[#0a1628] font-semibold px-7 py-3.5 rounded-xl transition-colors duration-300 text-sm"
             >
-              {lang === 'fr' ? 'Découvrir' : 'Discover'}
+              {hero.ctaPrimary[lang]}
               <svg
                 width="16"
                 height="16"
@@ -161,7 +155,7 @@ export default function Hero() {
               href="/contact"
               className="hero-cta group flex items-center gap-3 border border-cyan-500/30 hover:border-cyan-500/60 text-[var(--text-secondary)] hover:text-white px-7 py-3.5 rounded-xl transition-all duration-300 text-sm"
             >
-              {lang === 'fr' ? 'Nous Contacter' : 'Contact Us'}
+              {hero.ctaSecondary[lang]}
             </Link>
           </div>
 

@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { motion, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
-import { contact } from '@/lib/data';
+import { useSiteContent } from '@/lib/site-data';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -16,6 +16,8 @@ const staggerContainer: Variants = {
 
 export default function CTASection() {
   const { lang } = useLanguage();
+  const { contact } = useSiteContent();
+  const phones = [contact.phone1, contact.phone2].filter(Boolean);
 
   const ctaLinks = [
     {
@@ -135,7 +137,7 @@ export default function CTASection() {
               <span>✉</span> {contact.email}
             </a>
             <span className="w-1 h-1 rounded-full bg-cyan-500/20" />
-            {contact.phones.map((p, i) => (
+            {phones.map((p, i) => (
               <span key={i} className="flex items-center gap-1.5">
                 {i > 0 && <span className="w-1 h-1 rounded-full bg-cyan-500/20" />}
                 <a href={`tel:${p.replace(/\s/g, '')}`} className="hover:text-cyan-400 transition-colors">{p}</a>
@@ -143,7 +145,7 @@ export default function CTASection() {
             ))}
             <span className="w-1 h-1 rounded-full bg-cyan-500/20" />
             <a
-              href={`https://wa.me/${contact.phones[0].replace(/\s/g, '')}`}
+              href={`https://wa.me/${(phones[0] ?? '').replace(/\s/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-[#25D366] hover:text-[#4be37f] transition-colors"

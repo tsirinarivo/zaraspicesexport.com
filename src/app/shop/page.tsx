@@ -5,8 +5,8 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
 import { useCurrency } from '@/store/currency';
-import { products } from '@/lib/data';
 import type { Product } from '@/lib/data';
+import { useProducts } from '@/lib/site-data';
 import CurrencyToggle from '@/components/ui/CurrencyToggle';
 
 const fadeUp: Variants = {
@@ -53,6 +53,7 @@ export default function ShopPage() {
   const { lang } = useLanguage();
   const { addItem } = useCart();
   const { format } = useCurrency();
+  const products = useProducts();
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [activeTier, setActiveTier] = useState<number>(0);
 

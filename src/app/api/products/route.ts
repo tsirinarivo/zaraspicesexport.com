@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { products } from '@/lib/data';
+import { getProducts } from '@/lib/store';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
   const slug = searchParams.get('slug');
+  const products = await getProducts();
 
   if (slug) {
     const product = products.find((p) => p.slug === slug);

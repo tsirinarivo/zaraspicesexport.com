@@ -3,12 +3,13 @@ import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap, ScrollTrigger } from '@/lib/gsap';
 import Link from 'next/link';
-import { products } from '@/lib/data';
+import { useProducts } from '@/lib/site-data';
 import { useLanguage } from '@/store/language';
 import { useCurrency } from '@/store/currency';
 
 export default function HorizontalProducts() {
   const { lang } = useLanguage();
+  const products = useProducts();
   const { format } = useCurrency();
   const wrapperRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);

@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
 import { useCurrency } from '@/store/currency';
-import { products } from '@/lib/data';
+import type { Product } from '@/lib/data';
+import { useProducts } from '@/lib/site-data';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -20,6 +21,7 @@ export default function ProductsShowcase() {
   const { lang } = useLanguage();
   const { addItem } = useCart();
   const { format } = useCurrency();
+  const products = useProducts();
   const featured = products.filter((p) => p.featured);
 
   return (
@@ -107,7 +109,7 @@ function ProductCard({
   format,
   onAddToCart,
 }: {
-  product: (typeof products)[0];
+  product: Product;
   lang: 'fr' | 'en';
   format: (n: number) => string;
   onAddToCart: () => void;

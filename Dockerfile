@@ -33,10 +33,15 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Writable data directory for the JSON store (mounted as a volume in compose).
+# Created here so the named volume inherits nextjs ownership on first run.
+RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
+
 USER nextjs
 
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV DATA_DIR=/app/data
 
 CMD ["node", "server.js"]

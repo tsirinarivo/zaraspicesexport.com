@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
-import { contact, products } from '@/lib/data';
+import { contact as staticContact } from '@/lib/data';
+import { useProducts, useSiteContent } from '@/lib/site-data';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -29,6 +30,14 @@ interface FormData {
 export default function ContactPage() {
   const { lang } = useLanguage();
   const { items } = useCart();
+  const products = useProducts();
+  const liveContact = useSiteContent().contact;
+  const contact = {
+    email: liveContact.email,
+    phones: [liveContact.phone1, liveContact.phone2].filter(Boolean),
+    facebook: liveContact.facebook,
+    regions: staticContact.regions,
+  };
   const [form, setForm] = useState<FormData>({
     name: '',
     company: '',

@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
 import { useLanguage } from '@/store/language';
-import { products } from '@/lib/data';
+import { useProducts } from '@/lib/site-data';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
@@ -72,6 +72,7 @@ const LOT_DATA: Record<string, {
 
 export default function TracePage() {
   const { lang } = useLanguage();
+  const products = useProducts();
   const params = useParams();
   const lot = decodeURIComponent(params.lot as string);
   const data = LOT_DATA[lot];

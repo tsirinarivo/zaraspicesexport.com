@@ -2,13 +2,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { useLanguage } from '@/store/language';
-import { contact } from '@/lib/data';
+import { useSiteContent } from '@/lib/site-data';
 
 export default function WhatsAppButton() {
   const { lang } = useLanguage();
+  const { contact } = useSiteContent();
   const [open, setOpen] = useState(false);
 
-  const phone = contact.phones[0].replace(/\s/g, '');
+  const phones = [contact.phone1, contact.phone2].filter(Boolean);
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
@@ -30,7 +31,7 @@ export default function WhatsAppButton() {
                 : 'Let\'s discuss your order directly on WhatsApp.'}
             </p>
             <div className="flex flex-col gap-2">
-              {contact.phones.map((p) => (
+              {phones.map((p) => (
                 <a
                   key={p}
                   href={`https://wa.me/${p.replace(/\s/g, '')}`}

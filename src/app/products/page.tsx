@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { useLanguage } from '@/store/language';
 import { useCart } from '@/store/cart';
-import { products } from '@/lib/data';
 import type { Product } from '@/lib/data';
+import { useProducts } from '@/lib/site-data';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 32 },
@@ -35,6 +35,7 @@ const categories = {
 export default function ProductsPage() {
   const { lang } = useLanguage();
   const { addItem } = useCart();
+  const products = useProducts();
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
   const filtered = activeCategory === 'all'

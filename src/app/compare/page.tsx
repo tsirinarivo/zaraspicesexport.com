@@ -4,8 +4,8 @@ import { motion, Variants, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useLanguage } from '@/store/language';
 import { useCurrency } from '@/store/currency';
-import { products } from '@/lib/data';
 import type { Product } from '@/lib/data';
+import { useProducts } from '@/lib/site-data';
 import RadarChart from '@/components/ui/RadarChart';
 
 const fadeUp: Variants = {
@@ -23,7 +23,10 @@ const CHART_COLORS = ['#00e5ff', '#a3ff12', '#ff6b35'];
 export default function ComparePage() {
   const { lang } = useLanguage();
   const { format } = useCurrency();
-  const [selected, setSelected] = useState<string[]>([products[0].id, products[1].id]);
+  const products = useProducts();
+  const [selected, setSelected] = useState<string[]>(
+    products.slice(0, 2).map((p) => p.id)
+  );
 
   const toggle = (id: string) => {
     setSelected((prev) => {
